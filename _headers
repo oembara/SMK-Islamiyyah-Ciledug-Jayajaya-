@@ -1,0 +1,10 @@
+# Netlify: aturan cache. File di bawah memakai nama berisi hash / tidak pernah berubah, jadi aman di-cache setahun.
+/css/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# data.json selalu dicek ulang ke server (hasilnya 304 bila tidak berubah), jadi perubahan dari admin langsung terlihat
+/content/data.json
+  Cache-Control: public, max-age=0, must-revalidate

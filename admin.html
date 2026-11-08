@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel Admin · SMK Islamiyah Ciledug</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('css/fonts/pjs-400.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('css/fonts/pjs-500.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('css/fonts/pjs-600.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('css/fonts/pjs-700.woff2') format('woff2'); }
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('css/fonts/pjs-800.woff2') format('woff2'); }
+
+    :root {
+      --navy: #131E58; --blue: #213C9B; --sky: #4FC3F7; --gold: #FFC72C; --gold-dk: #E6A700;
+      --ink: #12162B; --sub: #4B5372; --paper: #F6F8FC; --line: #E3E7F2; --red: #C0392B; --green: #1E8E5A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--navy); line-height: 1.2; font-weight: 600; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    p { color: var(--sub); line-height: 1.6; }
+    a { color: var(--blue); }
+
+    /* LOGIN */
+    /* Latar login: foto sekolah + lapisan navy datar (selaras dengan hero website) */
+    .login { position: relative; min-height: 100vh; display: grid; place-items: center; padding: 20px; background: linear-gradient(rgba(15, 26, 77, .86), rgba(15, 26, 77, .86)), url('assets/hero.jpg') center / cover no-repeat, var(--navy); }
+    .login::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(circle at 50% 50%, #000, transparent 75%); mask-image: radial-gradient(circle at 50% 50%, #000, transparent 75%); }
+    .login-box { position: relative; border-top: 3px solid #C9A227; }
+    /* Kolom kata sandi + tombol tampilkan/sembunyikan */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 46px; }
+    .pw-eye { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--sub); cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+    .pw-eye:hover { background: #EEF1FA; color: var(--navy); }
+    .pw-eye:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+    .pw-eye .off { display: none; }
+    .pw-eye[aria-pressed="true"] .on { display: none; }
+    .pw-eye[aria-pressed="true"] .off { display: block; }
+    .login-box { background: #fff; border-radius: 18px; padding: 34px; width: 100%; max-width: 390px; box-shadow: 0 30px 60px rgba(6, 10, 40, .35); }
+    .login-box h1 { font-size: 26px; margin-bottom: 6px; }
+    .login-box p { font-size: 14px; margin-bottom: 20px; }
+    .login-box .err { color: var(--red); font-size: 13px; font-weight: 600; margin-top: 10px; min-height: 18px; }
+
+    /* SHELL */
+    .shell { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+    aside { background: var(--navy); color: #fff; padding: 22px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    aside .brand { padding: 4px 10px 18px; }
+    aside .brand b { display: block; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 17px; }
+    aside .brand span { font-size: 12px; color: var(--sky); font-weight: 600; }
+    aside .nav { background: none; border: none; color: #CBD3F0; text-align: left; padding: 11px 12px; border-radius: 10px; font-weight: 600; font-size: 14.5px; cursor: pointer; }
+    aside .nav:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+    aside .nav.on { background: rgba(255, 199, 44, .16); color: var(--gold); }
+    aside .spacer { flex: 1; }
+    aside .side-link { color: #CBD3F0; font-size: 13.5px; font-weight: 600; padding: 9px 12px; text-decoration: none; border-radius: 10px; background: none; border: none; text-align: left; cursor: pointer; }
+    aside .side-link:hover { color: #fff; background: rgba(255, 255, 255, .07); }
+    main { padding: 30px 34px 70px; min-width: 0; }
+    .head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+    .head h1 { font-size: 28px; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; border: 2px solid transparent; background: var(--navy); color: #fff; }
+    .btn:hover { filter: brightness(1.15); }
+    .btn.primary { background: var(--gold); color: var(--navy); }
+    .btn.primary:hover { background: var(--gold-dk); filter: none; }
+    .btn.ghost { background: #fff; color: var(--navy); border-color: var(--line); }
+    .btn.ghost:hover { border-color: var(--blue); filter: none; }
+    .btn.danger { background: #fff; color: var(--red); border-color: #F0C9C4; }
+    .btn.danger:hover { background: #FDF0EE; filter: none; }
+    .btn.sm { padding: 6px 12px; font-size: 13px; }
+
+    /* CARDS + FORMS */
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 18px; margin-bottom: 10px; }
+    .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+    .fld { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .fld.full { grid-column: 1 / -1; }
+    .lbl, .fld > span.t { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .fld input, .fld select, .fld textarea, .login-box input { border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff; width: 100%; }
+    .fld input:focus, .fld select:focus, .fld textarea:focus, .login-box input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(33, 60, 155, .12); }
+    .fld textarea { resize: vertical; line-height: 1.55; }
+    small.hint { font-size: 12px; color: var(--sub); }
+    .form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+
+    /* IMAGES */
+    .imgbox .prev { border: 1.5px dashed #C9D1EA; border-radius: 12px; min-height: 120px; max-height: 220px; display: flex; align-items: center; justify-content: center; background: #F1F4FB; overflow: hidden; color: var(--sub); font-size: 13px; }
+    .imgbox .prev img { max-width: 100%; max-height: 220px; object-fit: contain; display: block; }
+    .imgbox .acts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .galgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+    .galgrid .g { position: relative; aspect-ratio: 4/3; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #F1F4FB; }
+    .galgrid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .galgrid .x { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; border: none; background: rgba(18, 22, 43, .75); color: #fff; cursor: pointer; font-size: 14px; line-height: 1; }
+    .galgrid .x:hover { background: var(--red); }
+
+    /* LIST + EDITOR */
+    .split { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 22px; align-items: start; }
+    .list { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+    .row { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+    .row:last-child { border-bottom: none; }
+    .row:hover { background: #F6F8FF; }
+    .row.on { background: #EEF3FF; box-shadow: inset 3px 0 0 var(--gold); }
+    .row .th { width: 52px; height: 42px; border-radius: 8px; background: linear-gradient(135deg, var(--navy), var(--sky)); overflow: hidden; }
+    .row .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .row .tx b { display: block; font-size: 14px; color: var(--navy); line-height: 1.3; }
+    .row .tx span { font-size: 12px; color: var(--sub); }
+    .row .mv { display: flex; flex-direction: column; gap: 2px; }
+    .row .mv button { border: 1px solid var(--line); background: #fff; border-radius: 6px; width: 24px; height: 20px; font-size: 11px; cursor: pointer; line-height: 1; }
+    .row .mv button:hover { background: var(--gold); }
+    .empty { padding: 26px; text-align: center; color: var(--sub); font-size: 14px; }
+    .placeholder { color: var(--sub); text-align: center; padding: 50px 20px; }
+
+    /* DASHBOARD */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .stat { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; cursor: pointer; }
+    .stat:hover { border-color: var(--blue); }
+    .stat b { display: block; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 34px; color: var(--navy); }
+    .stat span { font-size: 13px; color: var(--sub); font-weight: 600; }
+    .badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+    .badge.draft { background: #FFF3D6; color: #8A5B00; }
+    .badge.file { background: #DDF3E8; color: var(--green); }
+    .badge.default { background: #EAF0FF; color: var(--blue); }
+    ol.steps { padding-left: 20px; color: var(--sub); line-height: 1.8; font-size: 14.5px; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+    /* SWITCH */
+    .swrow { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 700; color: var(--navy); font-size: 14px; position: relative; }
+    .swrow input { position: absolute; opacity: 0; pointer-events: none; }
+    .swui, .rsw { width: 46px; height: 26px; border-radius: 26px; background: #C9D1EA; position: relative; transition: background .2s; flex: none; border: none; padding: 0; }
+    .swui::after, .rsw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
+    .swrow input:checked + .swui, .rsw.on { background: var(--green); }
+    .swrow input:checked + .swui::after, .rsw.on::after { transform: translateX(20px); }
+    .swrow input:focus-visible + .swui { box-shadow: 0 0 0 3px rgba(33, 60, 155, .25); }
+    .rsw { cursor: pointer; width: 42px; height: 24px; }
+    .rsw::after { width: 18px; height: 18px; }
+    .rsw.on::after { transform: translateX(18px); }
+    .row.hs { grid-template-columns: 52px 1fr auto auto; }
+    .row.off .th, .row.off .tx { opacity: .5; }
+
+    /* VERIFIKASI LOGIN */
+    .verify { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 14px; background: rgba(10, 14, 40, .7); opacity: 0; transition: opacity .25s ease; }
+    .verify.in { opacity: 1; }
+    .verify-box { width: 100%; max-width: 340px; padding: 30px 28px 26px; text-align: center; background: #fff; border-radius: 18px; box-shadow: 0 30px 70px rgba(6, 10, 40, .45); transform: translateY(10px) scale(.97); transition: transform .3s ease; }
+    .verify.in .verify-box { transform: none; }
+    .verify-box h3 { font-size: 20px; margin-bottom: 4px; }
+    .verify-box p { font-size: 14px; }
+    .v-check { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%; background: var(--green); display: grid; place-items: center; animation: vpop .4s ease both; }
+    .v-check path { fill: none; stroke: #fff; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 26; stroke-dashoffset: 26; animation: vdraw .4s .2s ease forwards; }
+    .v-load { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; font-size: 13px; font-weight: 600; color: var(--sub); }
+    .v-spin { width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--blue); border-radius: 50%; animation: vspin .8s linear infinite; }
+    .v-bar { height: 4px; margin-top: 18px; border-radius: 2px; background: var(--line); overflow: hidden; }
+    .v-bar i { display: block; height: 100%; width: 0; background: var(--blue); animation: vfill 1.3s linear forwards; }
+    @keyframes vspin { to { transform: rotate(360deg); } }
+    @keyframes vpop { from { transform: scale(.6); opacity: 0; } }
+    @keyframes vdraw { to { stroke-dashoffset: 0; } }
+    @keyframes vfill { to { width: 100%; } }
+    @media (prefers-reduced-motion: reduce) { .v-check, .v-check path { animation: none; stroke-dashoffset: 0; } .verify, .verify-box { transition: none; } }
+
+    /* DIALOG KONFIRMASI KUSTOM */
+    .cfm { position: fixed; inset: 0; z-index: 310; display: grid; place-items: center; padding: 14px; background: rgba(10, 14, 40, .65); opacity: 0; transition: opacity .2s ease; }
+    .cfm.in { opacity: 1; }
+    .cfm-box { width: 100%; max-width: 400px; padding: 28px 26px 22px; text-align: center; background: #fff; border-radius: 18px; box-shadow: 0 30px 70px rgba(6, 10, 40, .45); transform: translateY(10px) scale(.97); transition: transform .25s ease; }
+    .cfm.in .cfm-box { transform: none; }
+    .cfm-ico { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; background: #FDF0EE; color: var(--red); }
+    .cfm-box h3 { font-size: 20px; margin-bottom: 6px; }
+    .cfm-box p { font-size: 14px; }
+    .cfm-act { display: flex; gap: 10px; margin-top: 22px; }
+    .cfm-act .btn { flex: 1; padding: 11px 14px; }
+    .btn.alert { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn.alert:hover { background: #A5301F; border-color: #A5301F; filter: none; }
+    .cfm-act .btn:focus-visible { outline: 3px solid rgba(33, 60, 155, .35); outline-offset: 2px; }
+    @media (max-width: 420px) { .cfm-act { flex-direction: column-reverse; } }
+    @media (prefers-reduced-motion: reduce) { .cfm, .cfm-box { transition: none; } }
+
+    /* CROPPER */
+    .modal-bg { position: fixed; inset: 0; background: rgba(10, 14, 40, .65); display: grid; place-items: center; z-index: 200; padding: 14px; }
+    .modal { background: #fff; border-radius: 18px; padding: 22px; width: 100%; max-width: 620px; max-height: 96vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(6, 10, 40, .45); }
+    .modal h3 { font-size: 20px; margin-bottom: 4px; }
+    .modal h3 small { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 13px; color: var(--sub); font-weight: 600; }
+    .cr-help { font-size: 13px; margin-bottom: 12px; }
+    .cr-ratios { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .cr-ratios button { border: 1.5px solid var(--line); background: #fff; border-radius: 20px; padding: 5px 13px; font-size: 13px; font-weight: 700; color: var(--sub); cursor: pointer; }
+    .cr-ratios button:hover { border-color: var(--blue); }
+    .cr-ratios button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .crop-vp { position: relative; margin: 0 auto; overflow: hidden; background: #0d1233; border-radius: 10px; touch-action: none; cursor: grab; user-select: none; }
+    .crop-vp:active { cursor: grabbing; }
+    .crop-vp.chk { background: repeating-conic-gradient(#d9deee 0% 25%, #fff 0% 50%) 50% / 16px 16px; }
+    .crop-vp img { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; pointer-events: none; -webkit-user-drag: none; }
+    .crop-vp .cgrid { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85);
+      background:
+        linear-gradient(90deg, transparent calc(33.33% - .5px), rgba(255, 255, 255, .45) calc(33.33% - .5px), rgba(255, 255, 255, .45) calc(33.33% + .5px), transparent calc(33.33% + .5px), transparent calc(66.66% - .5px), rgba(255, 255, 255, .45) calc(66.66% - .5px), rgba(255, 255, 255, .45) calc(66.66% + .5px), transparent calc(66.66% + .5px)),
+        linear-gradient(180deg, transparent calc(33.33% - .5px), rgba(255, 255, 255, .45) calc(33.33% - .5px), rgba(255, 255, 255, .45) calc(33.33% + .5px), transparent calc(33.33% + .5px), transparent calc(66.66% - .5px), rgba(255, 255, 255, .45) calc(66.66% - .5px), rgba(255, 255, 255, .45) calc(66.66% + .5px), transparent calc(66.66% + .5px)); }
+    .cr-zoom { display: flex; align-items: center; gap: 10px; margin: 14px auto 6px; max-width: 420px; font-weight: 700; color: var(--sub); }
+    .cr-zoom input { flex: 1; accent-color: var(--navy); }
+    .cr-info { text-align: center; font-size: 12.5px; color: var(--sub); min-height: 18px; }
+    .cr-info b.warn { color: var(--red); }
+    .cr-auto { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--sub); margin-top: 10px; cursor: pointer; }
+
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--navy); color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 100; box-shadow: 0 14px 30px rgba(6, 10, 40, .3); max-width: 90vw; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.err { background: var(--red); }
+
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 12px; gap: 4px; }
+      aside .brand { width: 100%; padding: 2px 8px 8px; }
+      aside .spacer { display: none; }
+      aside .nav, aside .side-link { padding: 8px 12px; font-size: 13.5px; }
+      main { padding: 22px 16px 70px; }
+      .split { grid-template-columns: 1fr; }
+      .fgrid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="js/data.js"></script>
+</head>
+
+<body>
+  <!-- LOGIN -->
+  <div class="login" id="login" hidden>
+    <div class="login-box">
+      <h1>Panel Admin</h1>
+      <p>SMK Islamiyah Ciledug. Masukkan kata sandi untuk mengelola konten website.</p>
+      <div id="login-info" style="font-size:13px; margin-bottom:14px"></div>
+      <div class="fld"><span class="t">Kata sandi</span><div class="pw-wrap"><input type="password" id="pw" autocomplete="current-password" placeholder="Kata sandi admin"><button type="button" class="pw-eye" id="pw-eye" aria-label="Tampilkan kata sandi" aria-pressed="false" title="Tampilkan kata sandi"><svg class="on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 19c-7 0-11-7-11-7a19.8 19.8 0 0 1 5.06-5.94M9.9 4.24A10.1 10.1 0 0 1 12 4c7 0 11 7 11 7a19.9 19.9 0 0 1-3.17 4.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div></div>
+      <button class="btn primary" id="btn-login" style="width:100%; margin-top:16px">Masuk</button>
+      <div class="err" id="login-err"></div>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div class="shell" id="shell" hidden>
+    <aside>
+      <div class="brand"><b>Panel Admin</b><span>SMK Islamiyah Ciledug</span></div>
+      <button class="nav" data-go="home">Ringkasan</button>
+      <button class="nav" data-go="settings">Pengaturan Umum</button>
+      <button class="nav" data-go="profil">Profil Sekolah</button>
+      <button class="nav" data-go="jurusan">Jurusan</button>
+      <button class="nav" data-go="prestasi">Prestasi</button>
+      <button class="nav" data-go="ekskul">Ekstrakurikuler</button>
+      <button class="nav" data-go="poster">Poster Beranda</button>
+      <button class="nav" data-go="testimoni">Testimoni Alumni</button>
+      <button class="nav" data-go="mitra">Mitra Industri</button>
+      <button class="nav" data-go="kegiatan">Kegiatan</button>
+      <button class="nav" data-go="unduhan">Unduhan (Pusat Berkas)</button>
+      <button class="nav" data-go="chatbot">Chatbot (Tanya Jawab)</button>
+      <button class="nav" data-go="ppdb">PPDB</button>
+      <button class="nav" data-go="berkas">Berkas PPDB</button>
+      <button class="nav" data-go="faq">FAQ Biaya &amp; Beasiswa</button>
+      <button class="nav" data-go="publish">Publikasi &amp; Cadangan</button>
+      <div class="spacer"></div>
+      <a class="side-link" href="index.html" target="_blank" rel="noopener">Lihat website ↗</a>
+      <button class="side-link" id="btn-logout">Keluar</button>
+    </aside>
+    <main id="view"></main>
+  </div>
+  <div id="toast"></div>
+
+  <script>
+    /* // GANTI KATA SANDI ADMIN
+       Ubah teks di bawah ini. Catatan: ini hanya pengunci tampilan panel. Karena situs ini statis, perubahan
+       baru tampil ke pengunjung setelah file data.json diunggah ke hosting (lihat menu Publikasi & Cadangan),
+       jadi orang yang membuka admin.html tanpa kata sandi tidak bisa mengubah website publik. */
+    const ADMIN_PASSWORD = 'admin123';
+
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const clone = o => JSON.parse(JSON.stringify(o));
+    // Teks disimpan dengan < dan > diubah jadi entitas supaya aman ditampilkan di website; di form dikembalikan lagi
+    const enc = s => String(s ?? '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const dec = s => String(s ?? '').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    const attr = s => dec(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+    let SERVER = null, HAS_DRAFT = false;   // SERVER = info dari api.php bila hosting mendukung (mode database), null = mode statis
+    let D, SOURCE = 'default', cur = 'home', state = { idx: null }, editing = null, CUR_FIELDS = [];
+    const view = $('#view');
+
+    /* ---------- DATA ---------- */
+    const toAdmin = data => { const d = clone(data); d.JURUSAN = Object.entries(d.JURUSAN).map(([id, j]) => ({ id, ...j })); return d; };
+    const payload = () => { const d = clone(D); d.JURUSAN = Object.fromEntries(d.JURUSAN.map(({ id, ...r }) => [id, r])); return d; };
+    async function persist() {
+      try {
+        if (SERVER) { await api('save', { method: 'POST', json: payload() }); SOURCE = 'server'; toast('Tersimpan dan langsung tayang di website'); }
+        else { await SiteStore.save(payload()); SOURCE = 'draft'; toast('Tersimpan'); }
+        return true;
+      } catch (e) {
+        toast(SERVER ? (e.message || 'Gagal menyimpan ke server') : 'Gagal menyimpan: penyimpanan browser penuh. Kecilkan jumlah/ukuran foto.', true);
+        return false;
+      }
+    }
+    // ---- komunikasi dengan api.php (hanya dipakai di mode server) ----
+    async function api(action, opt = {}) {
+      const headers = {};
+      if (SERVER && SERVER.csrf) headers['X-CSRF-Token'] = SERVER.csrf;
+      let body = opt.body;
+      if (opt.json !== undefined) { headers['Content-Type'] = 'application/json'; body = JSON.stringify(opt.json); }
+      const r = await fetch('api/api.php?action=' + action, { method: opt.method || 'GET', headers, body, credentials: 'same-origin', cache: 'no-store' });
+      let j = null; try { j = await r.json(); } catch (e) { }
+      if (r.status === 401 && action !== 'login') { toast('Sesi habis, silakan masuk lagi', true); setTimeout(() => location.reload(), 1300); throw new Error('Sesi habis, silakan masuk lagi'); }
+      if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ('Permintaan ke server gagal (' + r.status + ')'));
+      return j;
+    }
+    // Mode server: foto disimpan sebagai file di folder uploads/ (bukan teks base64), yang disimpan di data hanya alamatnya
+    async function storeImage(dataUrl) {
+      if (!SERVER || !/^data:image\//.test(dataUrl || '')) return dataUrl;
+      const blob = await (await fetch(dataUrl)).blob();
+      const fd = new FormData(); fd.append('file', blob, 'foto');
+      return (await api('upload', { method: 'POST', body: fd })).url;
+    }
+    // ===== Paket publikasi: data.json ringan + foto sebagai file terpisah =====
+    function loadJSZip() {
+      if (window.JSZip) return Promise.resolve(window.JSZip);
+      return new Promise((res, rej) => {
+        const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s.onload = () => res(window.JSZip); s.onerror = () => rej(new Error('Gagal memuat pustaka ZIP. Periksa koneksi internet.')); document.head.appendChild(s);
+      });
+    }
+    async function splitImages(o, files) {   // ganti setiap foto base64 dengan path assets/img/<hash>.<ext>
+      if (typeof o === 'string') {
+        if (!o.startsWith('data:image/')) return o;
+        const blob = await (await fetch(o)).blob(), buf = await blob.arrayBuffer();
+        const h = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-1', buf))).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 10);
+        const ext = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif', 'image/svg+xml': 'svg' }[blob.type] || 'img';
+        const path = `assets/img/${h}.${ext}`; files.set(path, buf); return path;
+      }
+      if (Array.isArray(o)) { const r = []; for (const x of o) r.push(await splitImages(x, files)); return r; }
+      if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) r[k] = await splitImages(o[k], files); return r; }
+      return o;
+    }
+    async function exportPackage() {
+      const JSZip = await loadJSZip(), files = new Map(), data = await splitImages(payload(), files);
+      const zip = new JSZip(); zip.file('content/data.json', JSON.stringify(data));
+      files.forEach((buf, path) => zip.file(path, buf));
+      const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+      const d = new Date(), stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `smk-publikasi-${stamp}.zip`; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000); return files.size;
+    }
+    async function recompressImages(o, st) {   // ubah foto base64 lama (JPEG/PNG) menjadi WebP bila hasilnya lebih kecil
+      if (typeof o === 'string') {
+        if (!/^data:image\/(jpeg|png)/.test(o)) return o;
+        try {
+          const im = await loadImg(o), k = Math.min(1, 1600 / Math.max(im.naturalWidth, im.naturalHeight));
+          const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          const n = c.toDataURL('image/webp', .8);
+          if (n.startsWith('data:image/webp') && n.length < o.length) { st.n++; st.saved += o.length - n.length; return n; }
+        } catch (e) { }
+        return o;
+      }
+      if (Array.isArray(o)) { const r = []; for (const x of o) r.push(await recompressImages(x, st)); return r; }
+      if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) r[k] = await recompressImages(o[k], st); return r; }
+      return o;
+    }
+    async function migrateImages(o) {   // pindahkan semua foto base64 di dalam data ke folder uploads/
+      if (typeof o === 'string') return /^data:image\//.test(o) ? storeImage(o) : o;
+      if (Array.isArray(o)) { const r = []; for (const x of o) r.push(await migrateImages(x)); return r; }
+      if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) r[k] = await migrateImages(o[k]); return r; }
+      return o;
+    }
+    function toast(msg, err) {
+      const t = $('#toast'); t.textContent = msg; t.className = 'show' + (err ? ' err' : '');
+      clearTimeout(toast.t); toast.t = setTimeout(() => t.className = '', 2600);
+    }
+
+    /* ---------- GAMBAR: potong & ubah ukuran ---------- */
+    // Setiap kolom foto punya rasio & ukuran keluaran bawaan yang cocok dengan tempat pemasangannya di website.
+    const RATIOS = { '4:5': 4 / 5, '3:4': 3 / 4, '16:9': 16 / 9, '4:3': 4 / 3, '3:2': 3 / 2, '2:1': 2, '1:1': 1, 'free': 0 };
+    const loadImg = src => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+    function specOf(f) {
+      const g = f.type === 'gallery';
+      return { ratio: f.ratio || (g ? '4:3' : '16:9'), out: f.out || (g ? 1000 : 1400), ratios: f.ratios || ['16:9', '4:3', '3:2', '2:1', '1:1', 'free'], mime: f.png ? 'image/png' : 'image/jpeg' };
+    }
+    // Semua foto dikonversi ke WebP di canvas sebelum disimpan (jauh lebih ringan dari JPEG/PNG; alpha PNG tetap terjaga).
+    // Browser lama tanpa dukungan WebP otomatis memakai format asal.
+    const WEBP = (() => { try { return document.createElement('canvas').toDataURL('image/webp').startsWith('data:image/webp'); } catch (e) { return false; } })();
+    function drawCrop(img, sx, sy, sw, sh, out, mime) {
+      const k = Math.min(1, out / Math.max(sw, sh));                 // tidak pernah diperbesar, hanya dikecilkan
+      const ow = Math.max(1, Math.round(sw * k)), oh = Math.max(1, Math.round(sh * k));
+      const c = document.createElement('canvas'); c.width = ow; c.height = oh;
+      const g = c.getContext('2d');
+      if (mime === 'image/jpeg') { g.fillStyle = '#fff'; g.fillRect(0, 0, ow, oh); }
+      g.drawImage(img, sx, sy, sw, sh, 0, 0, ow, oh);
+      return WEBP ? c.toDataURL('image/webp', mime === 'image/png' ? .9 : .82) : c.toDataURL(mime, .85);
+    }
+    function centerRegion(nw, nh, key) {
+      const ar = RATIOS[key] || nw / nh; let sw = nw, sh = nh;
+      if (nw / nh > ar) sw = nh * ar; else sh = nw / ar;
+      return [(nw - sw) / 2, (nh - sh) / 2, sw, sh];
+    }
+    async function autoCrop(file, f, key) {
+      const url = URL.createObjectURL(file), sp = specOf(f);
+      try { const im = await loadImg(url); return drawCrop(im, ...centerRegion(im.naturalWidth, im.naturalHeight, key), sp.out, sp.mime); }
+      finally { URL.revokeObjectURL(url); }
+    }
+    // Hasil: null = dilewati, {abort:true} = batalkan semua, {data, auto, key} = diterapkan
+    async function openCropper(src, f, info = {}) {
+      const isFile = typeof src !== 'string', url = isFile ? URL.createObjectURL(src) : src, sp = specOf(f);
+      let img;
+      try { img = await loadImg(url); } catch (e) { if (isFile) URL.revokeObjectURL(url); toast('Gagal membaca gambar', true); return null; }
+      const nw = img.naturalWidth, nh = img.naturalHeight, multi = (info.total || 1) > 1, more = multi && info.n < info.total;
+      return new Promise(resolve => {
+        const bg = document.createElement('div'); bg.className = 'modal-bg';
+        bg.innerHTML = `<div class="modal" role="dialog" aria-modal="true">
+          <h3>Atur foto ${multi ? `<small>(${info.n} dari ${info.total})</small>` : ''}</h3>
+          <p class="cr-help">${f.label}: geser foto untuk memilih bagian yang tampil, geser slider atau scroll untuk memperbesar.</p>
+          <div class="cr-ratios">${sp.ratios.map(k => `<button type="button" data-r="${k}">${k === 'free' ? 'Bebas' : k}</button>`).join('')}</div>
+          <div class="crop-vp${sp.mime === 'image/png' ? ' chk' : ''}"><img alt="" draggable="false" src="${url}"><div class="cgrid"></div></div>
+          <div class="cr-zoom"><span>−</span><input type="range" min="1" max="4" step="0.01" value="1" aria-label="Perbesar"><span>+</span></div>
+          <div class="cr-info"></div>
+          ${more ? '<label class="cr-auto"><input type="checkbox" id="cr-auto"> Terapkan rasio ini otomatis (potong bagian tengah) ke foto sisanya</label>' : ''}
+          <div class="form-actions">
+            <button type="button" class="btn primary" data-a="ok">Terapkan</button>
+            <button type="button" class="btn ghost" data-a="skip">${multi ? 'Lewati foto ini' : 'Batal'}</button>
+            ${multi ? '<button type="button" class="btn danger" data-a="abort" style="margin-left:auto">Batalkan semua</button>' : ''}
+          </div></div>`;
+        document.body.appendChild(bg);
+        const vp = bg.querySelector('.crop-vp'), im = vp.querySelector('img'), zoom = bg.querySelector('input[type=range]'), infoEl = bg.querySelector('.cr-info');
+        let key = sp.ratios.includes(sp.ratio) ? sp.ratio : sp.ratios[0], vw, vh, min, sc, x, y, drag = null;
+
+        const paint = () => {
+          x = Math.min(0, Math.max(vw - nw * sc, x)); y = Math.min(0, Math.max(vh - nh * sc, y));
+          im.style.width = nw * sc + 'px'; im.style.height = nh * sc + 'px'; im.style.transform = `translate(${x}px,${y}px)`;
+          const sw = vw / sc, sh = vh / sc, k = Math.min(1, sp.out / Math.max(sw, sh));
+          infoEl.innerHTML = `Hasil: ${Math.round(sw * k)} × ${Math.round(sh * k)} px` + (sw < 600 ? ' · <b class="warn">resolusi rendah, hasil mungkin kurang tajam</b>' : '');
+        };
+        const layout = () => {
+          const ar = RATIOS[key] || nw / nh;
+          const maxW = Math.min(560, innerWidth - 72), maxH = Math.max(160, innerHeight * .48);
+          vw = maxW; vh = vw / ar; if (vh > maxH) { vh = maxH; vw = vh * ar; }
+          vp.style.width = vw + 'px'; vp.style.height = vh + 'px';
+          min = Math.max(vw / nw, vh / nh); sc = min; x = (vw - nw * sc) / 2; y = (vh - nh * sc) / 2; zoom.value = 1;
+          $$('.cr-ratios button', bg).forEach(b => b.classList.toggle('on', b.dataset.r === key));
+          paint();
+        };
+        const setZoom = z => {
+          z = Math.min(4, Math.max(1, z)); zoom.value = z;
+          const cx = (vw / 2 - x) / sc, cy = (vh / 2 - y) / sc;   // titik tengah tetap di tempatnya saat zoom
+          sc = min * z; x = vw / 2 - cx * sc; y = vh / 2 - cy * sc; paint();
+        };
+        zoom.addEventListener('input', () => setZoom(+zoom.value));
+        vp.addEventListener('wheel', e => { e.preventDefault(); setZoom(+zoom.value * (e.deltaY < 0 ? 1.08 : 1 / 1.08)); }, { passive: false });
+        vp.addEventListener('pointerdown', e => { drag = { px: e.clientX, py: e.clientY, x, y }; vp.setPointerCapture?.(e.pointerId); });
+        vp.addEventListener('pointermove', e => { if (!drag) return; x = drag.x + e.clientX - drag.px; y = drag.y + e.clientY - drag.py; paint(); });
+        ['pointerup', 'pointercancel'].forEach(ev => vp.addEventListener(ev, () => drag = null));
+        $$('.cr-ratios button', bg).forEach(b => b.onclick = () => { key = b.dataset.r; layout(); });
+
+        const onKey = e => { if (e.key === 'Escape') close(null); };
+        const close = result => { document.removeEventListener('keydown', onKey); bg.remove(); if (isFile) URL.revokeObjectURL(url); resolve(result); };
+        document.addEventListener('keydown', onKey);
+        bg.querySelector('[data-a="skip"]').onclick = () => close(null);
+        const ab = bg.querySelector('[data-a="abort"]'); if (ab) ab.onclick = () => close({ abort: true });
+        bg.querySelector('[data-a="ok"]').onclick = () => {
+          try {
+            const data = drawCrop(img, -x / sc, -y / sc, vw / sc, vh / sc, sp.out, sp.mime);
+            close({ data, key, auto: !!(bg.querySelector('#cr-auto') || {}).checked });
+          } catch (e) { toast('Gagal memproses gambar', true); }
+        };
+        layout();
+      });
+    }
+    const imgBox = (f, val) => `
+      <div class="imgbox" id="box_${f.key}">
+        <span class="lbl">${f.label}</span>
+        <div class="prev" style="margin-top:6px">${val ? `<img src="${val}" alt="">` : '<span>Belum ada foto</span>'}</div>
+        <div class="acts">
+          <label class="btn ghost sm" style="cursor:pointer">${val ? 'Ganti foto' : 'Pilih foto'}<input type="file" accept="image/*" hidden data-key="${f.key}"></label>
+          ${val ? `<button type="button" class="btn ghost sm" data-act="recrop" data-key="${f.key}">Atur ulang potongan</button><button type="button" class="btn danger sm" data-act="del-img" data-key="${f.key}">Hapus foto</button>` : ''}
+        </div>
+        ${f.hint ? `<small class="hint">${f.hint}</small>` : ''}
+      </div>`;
+    const galBox = (f, arr = []) => `
+      <div class="imgbox" id="box_${f.key}">
+        <span class="lbl">${f.label}</span>
+        <div class="galgrid" style="margin-top:6px">
+          ${arr.map((src, i) => `<div class="g"><img src="${src}" alt=""><button type="button" class="x" title="Hapus" data-act="del-gal" data-key="${f.key}" data-i="${i}">×</button></div>`).join('')}
+        </div>
+        <div class="acts"><label class="btn ghost sm" style="cursor:pointer">+ Tambah foto<input type="file" accept="image/*" multiple hidden data-key="${f.key}"></label></div>
+        <small class="hint">${f.hint || 'Bisa pilih beberapa foto sekaligus.'}${arr.length ? '' : ' Kalau kosong, website memakai foto dari folder assets/ bila ada.'}</small>
+      </div>`;
+
+    /* ---------- FORM GENERIK ---------- */
+    function fieldHTML(f, obj) {
+      const v = obj[f.key], w = f.w === 'half' ? 'fld' : 'fld full';
+      if (f.type === 'switch') return `<label class="swrow"><input type="checkbox" data-k="${f.key}"${v !== false ? ' checked' : ''}><span class="swui"></span><span>${f.label}</span></label>${f.hint ? `<small class="hint" style="grid-column:1/-1;margin-top:-8px">${f.hint}</small>` : ''}`;
+      if (f.type === 'image') return `<div class="fld full">${imgBox(f, v)}</div>`;
+      if (f.type === 'gallery') return `<div class="fld full">${galBox(f, v)}</div>`;
+      const hint = f.hint ? `<small class="hint">${f.hint}</small>` : '';
+      const lbl = `<span class="t">${f.label}${f.req ? ' *' : ''}</span>`;
+      if (f.type === 'textarea') return `<label class="${w}">${lbl}<textarea data-k="${f.key}" rows="${f.rows || 4}" placeholder="${attr(f.ph || '')}">${attr(v)}</textarea>${hint}</label>`;
+      if (f.type === 'lines') return `<label class="${w}">${lbl}<textarea data-k="${f.key}" rows="${f.rows || 5}" placeholder="Satu baris = satu poin">${attr((v || []).map(dec).join('\n'))}</textarea>${hint}</label>`;
+      if (f.type === 'select') {
+        const opts = typeof f.options === 'function' ? f.options() : f.options;
+        return `<label class="${w}">${lbl}<select data-k="${f.key}">${opts.map(o => `<option${dec(v) === o ? ' selected' : ''}>${attr(o)}</option>`).join('')}</select>${hint}</label>`;
+      }
+      return `<label class="${w}">${lbl}<input data-k="${f.key}" value="${attr(v)}" placeholder="${attr(f.ph || '')}">${hint}</label>`;
+    }
+    const formHTML = (fields, obj) => `<div class="fgrid">${fields.map(f => fieldHTML(f, obj)).join('')}</div>`;
+    function syncForm() {
+      if (!editing) return;
+      $$('[data-k]', view).forEach(el => {
+        const f = CUR_FIELDS.find(x => x.key === el.dataset.k); if (!f) return;
+        if (f.type === 'switch') { editing[f.key] = el.checked; return; }
+        editing[f.key] = f.type === 'lines' ? el.value.split('\n').map(x => enc(x.trim())).filter(Boolean) : enc(el.value.trim());
+      });
+    }
+    function missingRequired() { const f = CUR_FIELDS.find(x => x.req && !editing[x.key]); return f ? f.label : null; }
+
+    /* ---------- DEFINISI BAGIAN ---------- */
+    const KATEGORI = ['Akademik', 'Non-Akademik', 'Sekolah'], TINGKAT = ['Sekolah', 'Kecamatan', 'Kota', 'Provinsi', 'Nasional', 'Internasional'];
+    const nextId = arr => Math.max(0, ...arr.map(x => +x.id || 0)) + 1;
+    const SECTIONS = {
+      jurusan: {
+        title: 'Jurusan', noun: 'jurusan', arr: () => D.JURUSAN, add: 'end',
+        blank: () => ({ id: '', name: '', singkatan: '', tagline: '', desc: '', kompetensi: [], fasilitas: [], kegiatan: [], karier: [], foto: '', galeri: [] }),
+        label: x => x.name || '(tanpa nama)', sub: x => x.singkatan,
+        fields: () => [
+          { key: 'name', label: 'Nama jurusan', type: 'text', req: 1, ph: 'Teknik Komputer dan Jaringan' },
+          { key: 'singkatan', label: 'Singkatan / kode', type: 'text', req: 1, w: 'half', ph: 'TKJ', hint: 'Jadi alamat halaman dan nama foto (huruf kecil). Tidak bisa diubah setelah jurusan dibuat.' },
+          { key: 'tagline', label: 'Tagline singkat', type: 'text', w: 'half', ph: 'Satu kalimat pembuka' },
+          { key: 'desc', label: 'Deskripsi', type: 'textarea', rows: 4 },
+          { key: 'kompetensi', label: 'Kompetensi yang dipelajari', type: 'lines', w: 'half' },
+          { key: 'fasilitas', label: 'Fasilitas & praktik', type: 'lines', w: 'half' },
+          { key: 'kegiatan', label: 'Kegiatan jurusan', type: 'lines', w: 'half' },
+          { key: 'karier', label: 'Prospek karier', type: 'lines', w: 'half' },
+          { key: 'foto', label: 'Foto utama jurusan', type: 'image', hint: 'Tampil di kartu, slideshow beranda, dan halaman detail. Rasio 16:9 paling aman.' },
+          { key: 'galeri', label: 'Galeri foto', type: 'gallery' }
+        ]
+      },
+      prestasi: {
+        title: 'Prestasi', noun: 'prestasi', arr: () => D.PRESTASI, add: 'start',
+        blank: () => ({ id: nextId(D.PRESTASI), title: '', kategori: 'Akademik', tingkat: 'Sekolah', tahun: String(new Date().getFullYear()), jur: 'Umum', desc: '', foto: '' }),
+        label: x => x.title || '(tanpa judul)', sub: x => `${x.tingkat || ''} · ${x.tahun || ''}`,
+        fields: () => [
+          { key: 'title', label: 'Judul prestasi', type: 'text', req: 1, ph: 'Juara 1 LKS Network Systems' },
+          { key: 'kategori', label: 'Kategori', type: 'select', options: KATEGORI, w: 'half' },
+          { key: 'tingkat', label: 'Tingkat', type: 'select', options: TINGKAT, w: 'half' },
+          { key: 'tahun', label: 'Tahun', type: 'text', w: 'half', ph: '2026' },
+          { key: 'jur', label: 'Jurusan', type: 'select', options: () => [...D.JURUSAN.map(j => dec(j.singkatan)), 'Umum', 'Sekolah'], w: 'half' },
+          { key: 'desc', label: 'Deskripsi', type: 'textarea', rows: 4 },
+          { key: 'foto', label: 'Foto prestasi', type: 'image' }
+        ]
+      },
+      ekskul: {
+        title: 'Ekstrakurikuler', noun: 'ekstrakurikuler', arr: () => D.EKSKUL, add: 'end',
+        blank: () => ({ id: nextId(D.EKSKUL), name: '', desc: '', jadwal: '', foto: '', galeri: [] }),
+        label: x => x.name || '(tanpa nama)', sub: x => x.jadwal,
+        fields: () => [
+          { key: 'name', label: 'Nama ekstrakurikuler', type: 'text', req: 1 },
+          { key: 'jadwal', label: 'Jadwal', type: 'text', ph: 'Sabtu, 09.00–11.00' },
+          { key: 'desc', label: 'Deskripsi', type: 'textarea', rows: 4 },
+          { key: 'foto', label: 'Foto utama', type: 'image' },
+          { key: 'galeri', label: 'Galeri kegiatan', type: 'gallery' }
+        ]
+      },
+      kegiatan: {
+        title: 'Kegiatan', noun: 'kegiatan', arr: () => D.KEGIATAN, add: 'start',
+        blank: () => ({ id: nextId(D.KEGIATAN), kategori: 'Akademik', jur: 'Umum', title: '', tanggal: '', excerpt: '', content: '', foto: '', galeri: [] }),
+        label: x => x.title || '(tanpa judul)', sub: x => x.tanggal,
+        fields: () => [
+          { key: 'title', label: 'Judul kegiatan', type: 'text', req: 1 },
+          { key: 'tanggal', label: 'Tanggal', type: 'text', ph: '17 Agustus 2026', w: 'half' },
+          { key: 'kategori', label: 'Kategori (filter)', type: 'select', options: KATEGORI, w: 'half' },
+          { key: 'jur', label: 'Jurusan (filter)', type: 'select', options: () => [...D.JURUSAN.map(j => dec(j.singkatan)), 'Umum', 'Sekolah'], w: 'half' },
+          { key: 'excerpt', label: 'Ringkasan (tampil di daftar)', type: 'textarea', rows: 2 },
+          { key: 'content', label: 'Isi berita', type: 'textarea', rows: 7 },
+          { key: 'foto', label: 'Foto utama', type: 'image' },
+          { key: 'galeri', label: 'Galeri foto', type: 'gallery' }
+        ]
+      }
+    };
+    SECTIONS.poster = {
+      title: 'Poster Beranda', noun: 'poster', toggle: true, arr: () => D.POSTER, add: 'start',
+      blank: () => ({ id: nextId(D.POSTER), aktif: true, judul: '', keterangan: '', foto: '', link: '', tombol: '', warna: 'Biru', tampilTeks: true }),
+      label: x => x.judul || '(tanpa judul)', sub: x => (x.aktif === false ? 'Nonaktif' : 'Aktif') + (x.foto ? ' · gambar' : ' · poster teks'),
+      fields: () => [
+        { key: 'aktif', label: 'Tampilkan poster ini di beranda', type: 'switch', hint: 'Matikan untuk menyembunyikan poster tanpa menghapusnya. Bisa juga lewat saklar di daftar sebelah kiri.' },
+        { key: 'judul', label: 'Judul poster', type: 'text', req: 1, ph: 'Penerimaan Siswa Baru 2027/2028' },
+        { key: 'keterangan', label: 'Keterangan singkat', type: 'textarea', rows: 3 },
+        { key: 'foto', label: 'Gambar poster (opsional)', type: 'image', ratio: '4:5', ratios: ['4:5', '3:4', '1:1', '16:9', 'free'], out: 1200, hint: 'Pakai rasio 4:5 (tegak) supaya pas di kartu. Kalau dikosongkan, poster tampil sebagai poster teks berwarna dari judul dan keterangan di atas.' },
+        { key: 'tampilTeks', label: 'Tampilkan judul dan keterangan di bawah gambar', type: 'switch', hint: 'Matikan kalau gambar posternya sudah memuat tulisan lengkap. Tidak berpengaruh pada poster teks.' },
+        { key: 'link', label: 'Tautan tujuan (opsional)', type: 'text', ph: '#ppdb atau https://...', hint: 'Halaman di website ini: #ppdb, #jurusan, #prestasi, #kegiatan, #kontak. Atau tautan lengkap https://... Kosongkan: gambar diperbesar saat diklik.' },
+        { key: 'tombol', label: 'Teks tombol (opsional)', type: 'text', w: 'half', ph: 'Selengkapnya' },
+        { key: 'warna', label: 'Warna poster teks', type: 'select', options: ['Biru', 'Emas', 'Hijau'], w: 'half', hint: 'Dipakai saat poster tidak memakai gambar.' }
+      ]
+    };
+    SECTIONS.testimoni = {
+      title: 'Testimoni Alumni', noun: 'testimoni', toggle: true, arr: () => D.TESTIMONI, add: 'end',
+      blank: () => ({ id: nextId(D.TESTIMONI), aktif: true, nama: '', tahun: String(new Date().getFullYear() - 1), pekerjaan: '', pesan: '', foto: '' }),
+      label: x => x.nama || '(tanpa nama)', sub: x => `Alumni ${x.tahun || ''}${x.pekerjaan ? ' · ' + x.pekerjaan : ''}`,
+      fields: () => [
+        { key: 'aktif', label: 'Tampilkan di beranda', type: 'switch' },
+        { key: 'nama', label: 'Nama alumni', type: 'text', req: 1 },
+        { key: 'tahun', label: 'Tahun lulus', type: 'text', w: 'half', ph: '2023' },
+        { key: 'pekerjaan', label: 'Pekerjaan / perusahaan saat ini', type: 'text', w: 'half', ph: 'Network Engineer, PT ...' },
+        { key: 'pesan', label: 'Kesan dan pesan', type: 'textarea', rows: 4, hint: 'Singkat saja (1–3 kalimat) supaya kartu tetap rapi.' },
+        { key: 'foto', label: 'Foto alumni (opsional)', type: 'image', ratio: '1:1', ratios: ['1:1'], out: 400, hint: 'Rasio 1:1. Kalau kosong, tampil inisial nama.' }
+      ]
+    };
+    SECTIONS.mitra = {
+      title: 'Mitra Industri', noun: 'mitra', arr: () => D.MITRA, add: 'end',
+      blank: () => ({ id: nextId(D.MITRA), nama: '', foto: '' }),
+      label: x => x.nama || '(tanpa nama)', sub: x => x.foto ? 'Logo terpasang' : 'Tampil sebagai teks',
+      fields: () => [
+        { key: 'nama', label: 'Nama perusahaan', type: 'text', req: 1 },
+        { key: 'foto', label: 'Logo perusahaan', type: 'image', png: 1, out: 400, ratio: 'free', ratios: ['free', '2:1', '1:1'], hint: 'Logo PNG transparan paling bagus. Kalau kosong, nama perusahaan tampil sebagai teks di marquee beranda.' }
+      ]
+    };
+    SECTIONS.faq = {
+      title: 'FAQ Biaya & Beasiswa', noun: 'pertanyaan', toggle: true, arr: () => D.PPDB.faq, add: 'end',
+      blank: () => ({ id: nextId(D.PPDB.faq), aktif: true, kategori: 'Biaya', q: '', a: '' }),
+      label: x => x.q || '(tanpa pertanyaan)', sub: x => x.kategori,
+      fields: () => [
+        { key: 'aktif', label: 'Tampilkan di halaman PPDB', type: 'switch' },
+        { key: 'kategori', label: 'Topik', type: 'select', options: ['Biaya', 'Beasiswa', 'Umum'], w: 'half', hint: 'Jadi tab filter di accordion.' },
+        { key: 'q', label: 'Pertanyaan', type: 'text', req: 1 },
+        { key: 'a', label: 'Jawaban', type: 'textarea', rows: 5 }
+      ]
+    };
+    SECTIONS.chatbot = {
+      title: 'Chatbot (Tanya Jawab)', noun: 'jawaban', toggle: true, arr: () => D.CHATBOT, add: 'end',
+      blank: () => ({ id: nextId(D.CHATBOT), aktif: true, tanya: '', kata: '', jawaban: '' }),
+      label: x => x.tanya || '(tanpa pertanyaan)', sub: x => x.kata ? 'Kata kunci: ' + x.kata : 'Belum ada kata kunci',
+      fields: () => [
+        { key: 'aktif', label: 'Aktifkan jawaban ini', type: 'switch' },
+        { key: 'tanya', label: 'Pertanyaan (catatan untuk admin)', type: 'text', req: 1, ph: 'Seragam sekolah' },
+        { key: 'kata', label: 'Kata kunci pemicu', type: 'text', ph: 'seragam, baju, pakaian, atribut', hint: 'Pisahkan dengan koma. Chatbot menjawab bila pertanyaan pengunjung memuat salah satu kata/frasa ini (salah ketik ringan tetap dikenali). Pilih kata yang khas, hindari kata umum seperti "sekolah".' },
+        { key: 'jawaban', label: 'Jawaban', type: 'textarea', rows: 6, hint: 'Boleh pakai **huruf tebal** dan baris baru. Tombol tautan: tulis [teks tombol](alamat), contoh [Lihat halaman PPDB](ppdb.html) atau [Unduh formulir](unduhan.html).' }
+      ]
+    };
+    const KAT_UNDUHAN = ['Surat & Pernyataan', 'PKL / Prakerin', 'Administrasi', 'Akademik', 'PPDB', 'Lainnya'];
+    SECTIONS.unduhan = {
+      title: 'Unduhan (Pusat Berkas)', noun: 'berkas', toggle: true, arr: () => D.UNDUHAN, add: 'end',
+      blank: () => ({ id: nextId(D.UNDUHAN), aktif: true, kategori: KAT_UNDUHAN[0], judul: '', deskripsi: '', url: '', jenis: '', ukuran: '', tanggal: '' }),
+      label: x => x.judul || '(tanpa judul)', sub: x => `${x.kategori || 'Lainnya'} · ${x.url ? 'Tautan terpasang' : 'Belum ada tautan'}`,
+      fields: () => [
+        { key: 'aktif', label: 'Tampilkan di halaman Unduhan', type: 'switch' },
+        { key: 'judul', label: 'Nama dokumen', type: 'text', req: 1, ph: 'Formulir Pendaftaran PKL' },
+        { key: 'kategori', label: 'Kategori', type: 'select', options: KAT_UNDUHAN, w: 'half', hint: 'Dokumen dengan kategori yang sama dikelompokkan bersama.' },
+        { key: 'jenis', label: 'Jenis berkas (opsional)', type: 'text', w: 'half', ph: 'PDF', hint: 'Kosongkan agar dibaca otomatis dari nama file.' },
+        { key: 'deskripsi', label: 'Keterangan singkat', type: 'text', ph: 'Diisi siswa kelas XI sebelum penempatan PKL' },
+        { key: 'url', label: 'Tautan / path berkas', type: 'text', ph: 'unduhan/formulir-pkl.pdf  atau  https://drive.google.com/file/d/...', hint: 'Taruh file di folder unduhan/ lalu isi path-nya, atau tempel link Google Drive (Bagikan: Siapa saja yang memiliki link). Kosong = tampil "Segera tersedia".' },
+        { key: 'ukuran', label: 'Ukuran (opsional)', type: 'text', w: 'half', ph: '240 KB' },
+        { key: 'tanggal', label: 'Terakhir diperbarui (opsional)', type: 'text', w: 'half', ph: 'Okt 2026' }
+      ]
+    };
+    SECTIONS.berkas = {
+      title: 'Berkas PPDB', noun: 'berkas', arr: () => D.PPDB.berkas, add: 'end',
+      blank: () => ({ id: nextId(D.PPDB.berkas), nama: '', ket: '', link: '' }),
+      label: x => x.nama || '(tanpa nama)', sub: x => x.ket,
+      fields: () => [
+        { key: 'nama', label: 'Nama berkas / surat', type: 'text', req: 1, ph: 'Surat pernyataan orang tua/wali' },
+        { key: 'ket', label: 'Keterangan', type: 'text', ph: 'Bermaterai, 1 lembar' },
+        { key: 'link', label: 'Tautan unduh (opsional)', type: 'text', ph: 'https://drive.google.com/...', hint: 'Isi kalau ada formulir/surat yang perlu diunduh calon siswa (Google Drive atau file di folder dokumen/). Kosongkan kalau tidak ada.' }
+      ]
+    };
+    const PPDB_FIELDS = [
+      { key: 'status', label: 'Status pendaftaran', type: 'select', options: ['Dibuka', 'Segera dibuka', 'Ditutup'], w: 'half', hint: 'Kalau bukan "Dibuka", tombol daftar di website otomatis nonaktif.' },
+      { key: 'tahun', label: 'Tahun ajaran', type: 'text', w: 'half', ph: '2027/2028' },
+      { key: 'intro', label: 'Kata pengantar', type: 'textarea', rows: 3 },
+      { key: 'jadwal', label: 'Jadwal', type: 'lines', w: 'half', hint: 'Satu baris = satu jadwal. Baris pertama tampil di banner beranda.' },
+      { key: 'alur', label: 'Alur pendaftaran', type: 'lines', w: 'half', hint: 'Satu baris = satu langkah, otomatis diberi nomor.' },
+      { key: 'formUrl', label: 'Tautan formulir online (Google Form)', type: 'text', ph: 'https://forms.gle/...', hint: 'Tempel tautan Google Form. Di Google Form, tambahkan pertanyaan "Upload file" supaya berkas calon siswa masuk ke Google Drive dan datanya rapi di Google Sheets.' },
+      { key: 'deadline', label: 'Batas waktu countdown (WIB)', type: 'text', w: 'half', ph: '2026-12-31 23:59', hint: 'Format TTTT-BB-HH JJ:MM. Kosongkan untuk menyembunyikan countdown.' },
+      { key: 'deadlineLabel', label: 'Teks di atas countdown', type: 'text', w: 'half', ph: 'Gelombang 1 ditutup dalam' },
+      { key: 'catatan', label: 'Catatan tambahan', type: 'textarea', rows: 2 }
+    ];
+    const PROFIL_FIELDS = [
+      { key: 'fotoProfil', label: 'Foto bagian atas (sejarah sekolah)', type: 'image', ratio: '3:2', hint: 'Rasio 3:2 paling pas. Tampil di samping teks sejarah singkat.' },
+      { key: 'visi', label: 'Visi', type: 'textarea', rows: 3, hint: 'Satu kalimat/paragraf visi sekolah.' },
+      { key: 'misi', label: 'Misi', type: 'lines', rows: 8, hint: 'Satu baris = satu poin misi. Tambah baris baru untuk poin tambahan, hapus baris untuk menghapus poin.' },
+      { key: 'fotoVisi', label: 'Foto bagian visi & misi', type: 'image', ratio: '3:2', hint: 'Rasio 3:2 paling pas. Tampil di samping teks visi & misi. Kalau dikosongkan, tampil ikon bawaan.' }
+    ];
+    const SETTINGS_FIELDS = [
+      { key: 'namaLengkap', label: 'Nama lengkap sekolah', type: 'text', req: 1, hint: 'Dipakai di judul tab, beranda, dan footer.' },
+      { key: 'namaSekolah', label: 'Nama di navbar (baris 1)', type: 'text', w: 'half' },
+      { key: 'subNama', label: 'Nama di navbar (baris 2)', type: 'text', w: 'half' },
+      { key: 'heroJudul', label: 'Judul besar beranda', type: 'text' },
+      { key: 'heroDeskripsi', label: 'Deskripsi beranda', type: 'textarea', rows: 3 },
+      { key: 'akreditasi', label: 'Akreditasi (nilai)', type: 'text', w: 'half', ph: 'A', hint: 'Contoh: A, B, atau Unggul.' },
+      { key: 'akreditasiKet', label: 'Keterangan akreditasi', type: 'text', w: 'half', ph: 'Terakreditasi BAN-S/M, SK No. ..., berlaku s.d. ...' },
+      { key: 'jumlahSiswa', label: 'Jumlah siswa aktif', type: 'text', w: 'half', ph: '500+' },
+      { key: 'jumlahGuru', label: 'Jumlah guru & tenaga pendidik', type: 'text', w: 'half', ph: '40+' },
+      { key: 'alumni', label: 'Statistik: alumni bekerja', type: 'text', w: 'half', ph: '800+' },
+      { key: 'mitra', label: 'Statistik: mitra industri', type: 'text', w: 'half', ph: '25+' },
+      { key: 'statKerja', label: 'Statistik: lulusan terserap kerja', type: 'text', w: 'half', ph: '90%', hint: 'Tampil di hero beranda dengan animasi hitung.' },
+      { key: 'videoUrl', label: 'Video profil / virtual tour (link YouTube atau .mp4)', type: 'text', ph: 'https://www.youtube.com/watch?v=...', hint: 'Kosongkan untuk menyembunyikan section video di beranda.' },
+      { key: 'videoJudul', label: 'Judul section video', type: 'text', w: 'half' },
+      { key: 'waSapaan', label: 'Pesan awal saat pengunjung lanjut ke WhatsApp (dari chatbot)', type: 'text', w: 'half' },
+      { key: 'npsn', label: 'NPSN (opsional)', type: 'text', w: 'half', hint: 'Tampil di footer bila diisi.' },
+      { key: 'jamLayanan', label: 'Jam layanan (opsional)', type: 'text', w: 'half', ph: 'Senin – Jumat, 07.00 – 15.00 WIB' },
+      { key: 'alamat', label: 'Alamat', type: 'text' },
+      { key: 'telepon', label: 'Telepon', type: 'text', w: 'half' },
+      { key: 'email', label: 'Email', type: 'text', w: 'half' },
+      { key: 'jam', label: 'Jam operasional', type: 'text', w: 'half' },
+      { key: 'whatsapp', label: 'Nomor WhatsApp', type: 'text', w: 'half', ph: '6281234567890', hint: 'Format internasional tanpa + atau spasi.' },
+      { key: 'logo', label: 'Logo sekolah (navbar & beranda)', type: 'image', png: 1, out: 512, ratio: '1:1', ratios: ['1:1', 'free'], hint: 'Pakai rasio 1:1 (persegi) atau Bebas kalau logonya lebar. PNG transparan tetap transparan.' },
+      { key: 'heroBg', label: 'Background beranda', type: 'image', out: 1920, ratio: '16:9', hint: 'Foto lebar rasio 16:9 (1920 px). Lapisan biru transparan tetap dipasang supaya teks terbaca.' },
+    ];
+
+    /* ---------- VIEWS ---------- */
+    function nav(to) {
+      if (editing) syncForm();
+      cur = to; state = { idx: null }; editing = null;
+      $$('aside .nav').forEach(b => b.classList.toggle('on', b.dataset.go === to));
+      if (to === 'home') viewHome(); else if (to === 'settings') viewSettings(); else if (to === 'ppdb') viewPpdb(); else if (to === 'profil') viewProfil(); else if (to === 'publish') viewPublish(); else viewList(to);
+      window.scrollTo(0, 0);
+    }
+    function viewHome() {
+      const n = { jurusan: D.JURUSAN.length, prestasi: D.PRESTASI.length, ekskul: D.EKSKUL.length, kegiatan: D.KEGIATAN.length, berkas: D.PPDB.berkas.length, poster: D.POSTER.filter(p => p.aktif !== false).length, testimoni: D.TESTIMONI.length, mitra: D.MITRA.length, faq: D.PPDB.faq.length, unduhan: D.UNDUHAN.length, chatbot: D.CHATBOT.length };
+      view.innerHTML = `
+        <div class="head"><h1>Ringkasan</h1></div>
+        <div class="stats">
+          <div class="stat" data-go="jurusan"><b>${n.jurusan}</b><span>Jurusan</span></div>
+          <div class="stat" data-go="prestasi"><b>${n.prestasi}</b><span>Prestasi</span></div>
+          <div class="stat" data-go="ekskul"><b>${n.ekskul}</b><span>Ekstrakurikuler</span></div>
+          <div class="stat" data-go="kegiatan"><b>${n.kegiatan}</b><span>Kegiatan</span></div>
+          <div class="stat" data-go="poster"><b>${n.poster}/${D.POSTER.length}</b><span>Poster aktif</span></div>
+          <div class="stat" data-go="ppdb"><b>${D.PPDB.status}</b><span>Status PPDB</span></div>
+          <div class="stat" data-go="berkas"><b>${n.berkas}</b><span>Berkas PPDB</span></div>
+          <div class="stat" data-go="testimoni"><b>${n.testimoni}</b><span>Testimoni</span></div>
+          <div class="stat" data-go="mitra"><b>${n.mitra}</b><span>Mitra industri</span></div>
+          <div class="stat" data-go="faq"><b>${n.faq}</b><span>FAQ PPDB</span></div>
+          <div class="stat" data-go="unduhan"><b>${n.unduhan}</b><span>Berkas unduhan</span></div>
+          <div class="stat" data-go="chatbot"><b>${n.chatbot}</b><span>Jawaban chatbot</span></div>
+        </div>
+        <div class="card"><h3>Cara pakai</h3>
+          <ol class="steps">
+            <li>Ubah teks, logo, dan background di <b>Pengaturan Umum</b>.</li>
+            <li>Tambah, ubah, hapus, atau urutkan data di menu Jurusan, Prestasi, Ekstrakurikuler, dan Kegiatan.</li>
+            <li>Klik <b>Simpan</b> di setiap form. Hasilnya langsung bisa dilihat lewat "Lihat website" di browser ini.</li>
+            ${SERVER ? '<li>Selesai. Setiap perubahan yang disimpan <b>langsung tayang</b> ke semua pengunjung, tanpa mengunggah file.</li>' : '<li>Supaya pengunjung lain ikut melihatnya, buka <b>Publikasi &amp; Cadangan</b> lalu unduh <code>data.json</code> dan unggah ke hosting.</li>'}
+          </ol>
+        </div>`;
+    }
+    function viewSettings() {
+      editing = clone(D.settings); CUR_FIELDS = SETTINGS_FIELDS;
+      view.innerHTML = `
+        <div class="head"><h1>Pengaturan Umum</h1></div>
+        <div class="card">${formHTML(SETTINGS_FIELDS, editing)}
+          <div class="form-actions"><button class="btn primary" data-act="save-settings">Simpan pengaturan</button></div>
+        </div>`;
+    }
+    function viewList(sec) {
+      const S = SECTIONS[sec], arr = S.arr();
+      view.innerHTML = `
+        <div class="head"><h1>${S.title}</h1><button class="btn primary" data-act="new">+ Tambah ${S.noun}</button></div>
+        <div class="split">
+          <div class="list">${arr.length ? arr.map((x, i) => `
+            <div class="row${i === state.idx ? ' on' : ''}${S.toggle ? ' hs' : ''}${S.toggle && x.aktif === false ? ' off' : ''}" data-act="edit" data-i="${i}">
+              <div class="th">${x.foto ? `<img src="${x.foto}" alt="">` : ''}</div>
+              <div class="tx"><b>${S.label(x)}</b><span>${S.sub(x) || ''}</span></div>
+              ${S.toggle ? `<button class="rsw${x.aktif === false ? '' : ' on'}" data-act="toggle" data-i="${i}" role="switch" aria-checked="${x.aktif !== false}" title="Aktif / nonaktif"></button>` : ''}
+              <div class="mv"><button data-act="up" data-i="${i}" title="Naikkan">▲</button><button data-act="down" data-i="${i}" title="Turunkan">▼</button></div>
+            </div>`).join('') : '<div class="empty">Belum ada data. Klik tombol tambah.</div>'}</div>
+          <div class="card" id="editor" style="margin:0"></div>
+        </div>`;
+      renderEditor();
+    }
+    function renderEditor() {
+      const S = SECTIONS[cur], box = $('#editor');
+      if (state.idx === null || !editing) { box.innerHTML = '<div class="placeholder">Pilih item di sebelah kiri untuk mengubahnya, atau klik tombol tambah.</div>'; return; }
+      CUR_FIELDS = S.fields();
+      const isNew = state.idx === -1;
+      box.innerHTML = `<h3>${isNew ? 'Tambah ' + S.noun : 'Ubah ' + S.noun}</h3>${formHTML(CUR_FIELDS, editing)}
+        <div class="form-actions">
+          <button class="btn primary" data-act="save">Simpan</button>
+          <button class="btn ghost" data-act="cancel">Batal</button>
+          ${isNew ? '' : '<button class="btn danger" data-act="delete" style="margin-left:auto">Hapus</button>'}
+        </div>`;
+    }
+    function viewProfil() {
+      editing = clone(D.settings); CUR_FIELDS = PROFIL_FIELDS;
+      view.innerHTML = `
+        <div class="head"><h1>Profil Sekolah</h1></div>
+        <div class="card">${formHTML(PROFIL_FIELDS, editing)}
+          <div class="form-actions"><button class="btn primary" data-act="save-profil">Simpan profil</button></div>
+        </div>
+        <p style="font-size:13.5px">Tampil di halaman Profil website (bagian sejarah, serta visi &amp; misi).</p>`;
+    }
+    function viewPpdb() {
+      editing = clone(D.PPDB); CUR_FIELDS = PPDB_FIELDS;
+      view.innerHTML = `
+        <div class="head"><h1>PPDB</h1></div>
+        <div class="card">${formHTML(PPDB_FIELDS, editing)}
+          <div class="form-actions"><button class="btn primary" data-act="save-ppdb">Simpan pengaturan PPDB</button>
+            <button class="btn ghost" data-go="berkas">Kelola berkas persyaratan →</button></div>
+        </div>`;
+    }
+    function viewPublish() {
+      const size = new Blob([JSON.stringify(payload())]).size;
+      const sizeTxt = size > 1048576 ? (size / 1048576).toFixed(1) + ' MB' : Math.round(size / 1024) + ' KB';
+      const status = { draft: ['draft', 'Draf di browser ini'], file: ['file', 'Dimuat dari data.json'], default: ['default', 'Data bawaan'], server: ['file', 'Terhubung ke server'], 'server-empty': ['default', 'Server masih kosong (memakai data bawaan)'] }[SOURCE];
+      if (SERVER) return viewPublishServer(sizeTxt, status);
+      view.innerHTML = `
+        <div class="head"><h1>Publikasi &amp; Cadangan</h1></div>
+        <div class="card"><h3>Status data</h3>
+          <p><span class="badge ${status[0]}">${status[1]}</span> &nbsp;Ukuran data saat ini: <b>${sizeTxt}</b> (sebagian besar foto).</p>
+          <p style="margin-top:8px">Perubahan yang kamu simpan tersimpan sebagai <b>draf di browser ini saja</b>. Pengunjung lain baru melihatnya setelah kamu menayangkannya lewat langkah di bawah.</p>
+        </div>
+        <div class="card"><h3>Menayangkan perubahan ke website</h3>
+          <ol class="steps">
+            <li>Klik <b>Unduh paket publikasi (.zip)</b>. Paket ini berisi <code>data.json</code> yang ringan dan semua foto sebagai file WebP terpisah (<code>assets/img/</code>), supaya website tetap cepat dibuka.</li>
+            <li>Ekstrak ZIP-nya ke folder proyek (sejajar dengan <code>index.html</code>), timpa <code>content/data.json</code> yang lama.</li>
+            <li>Upload ulang foldernya ke hosting (Netlify: drag and drop folder proyek lagi, atau push ke Git). Selesai.</li>
+          </ol>
+          <div class="btn-row"><button class="btn primary" data-act="export-zip">Unduh paket publikasi (.zip)</button><button class="btn ghost" data-act="export">Unduh data.json saja (cadangan penuh)</button><button class="btn ghost" data-act="recompress">Kompres semua foto ke WebP</button></div>
+          <p class="muted" style="margin-top:10px">Memerlukan internet sebentar untuk memuat pustaka ZIP. <code>data.json</code> hasil "Unduh data.json saja" masih menyertakan foto di dalamnya (berat), jadi pakai untuk cadangan, bukan untuk ditayangkan.</p>
+        </div>
+        <div class="card"><h3>Cadangan &amp; pemulihan</h3>
+          <div class="btn-row">
+            <label class="btn ghost" style="cursor:pointer">Impor data.json<input type="file" accept="application/json,.json" hidden id="import-file"></label>
+            <button class="btn ghost" data-act="discard">Buang draf di browser ini</button>
+            <button class="btn danger" data-act="reset">Reset ke data bawaan</button>
+          </div>
+          <p style="margin-top:12px; font-size:13px"><b>Buang draf</b> mengembalikan tampilan ke versi yang sudah ditayangkan (data.json atau bawaan). <b>Reset</b> mengganti seluruh isi dengan data contoh awal.</p>
+        </div>`;
+    }
+
+    function viewPublishServer(sizeTxt, status) {
+      view.innerHTML = `
+        <div class="head"><h1>Publikasi &amp; Cadangan</h1></div>
+        <div class="card"><h3>Status</h3>
+          <p><span class="badge ${status[0]}">${status[1]}</span> &nbsp;Penyimpanan: <b>${SERVER.storage === 'sqlite' ? 'database SQLite' : 'file JSON'}</b>. Ukuran data teks: <b>${sizeTxt}</b>.</p>
+          <p style="margin-top:8px">Setiap kali kamu klik <b>Simpan</b>, perubahan <b>langsung tayang</b> ke semua pengunjung. Tidak perlu mengunggah <code>data.json</code>. Foto tersimpan sebagai file di folder <code>uploads/</code> di hosting.</p>
+        </div>
+        <div class="card"><h3>Cadangan &amp; pemulihan</h3>
+          <div class="btn-row">
+            <button class="btn primary" data-act="export">Unduh cadangan (data.json)</button>
+            <button class="btn ghost" data-act="recompress">Kompres semua foto ke WebP</button>
+            <label class="btn ghost" style="cursor:pointer">Impor cadangan<input type="file" accept="application/json,.json" hidden id="import-file"></label>
+            ${HAS_DRAFT ? '<button class="btn ghost" data-act="import-draft">Pindahkan draf browser ke server</button>' : ''}
+            <button class="btn danger" data-act="reset">Reset ke data bawaan</button>
+          </div>
+          <p style="margin-top:12px; font-size:13px">Cadangan ini berisi teks dan alamat foto. Untuk cadangan lengkap, unduh juga folder <code>uploads/</code> lewat File Manager hosting (atau aktifkan backup otomatis dari hosting). <b>Impor</b> otomatis memindahkan foto berformat lama (base64) ke folder uploads/.</p>
+        </div>`;
+    }
+
+    /* ---------- AKSI ---------- */
+    document.addEventListener('click', async e => {
+      const g = e.target.closest('[data-go]'); if (g) { nav(g.dataset.go); return; }
+      const t = e.target.closest('[data-act]'); if (!t) return;
+      const act = t.dataset.act, i = +t.dataset.i, S = SECTIONS[cur];
+      if (act === 'new') { syncForm(); state.idx = -1; editing = S.blank(); viewList(cur); }
+      else if (act === 'toggle') {
+        syncForm(); const arr = S.arr(); arr[i].aktif = arr[i].aktif === false;
+        if (state.idx === i && editing) editing.aktif = arr[i].aktif;
+        await persist(); viewList(cur);
+      }
+      else if (act === 'edit') { state.idx = i; editing = clone(S.arr()[i]); viewList(cur); }
+      else if (act === 'cancel') { state.idx = null; editing = null; viewList(cur); }
+      else if (act === 'up' || act === 'down') {
+        const a = S.arr(), j = act === 'up' ? i - 1 : i + 1; if (j < 0 || j >= a.length) return;
+        syncForm(); [a[i], a[j]] = [a[j], a[i]];
+        if (state.idx === i) state.idx = j; else if (state.idx === j) state.idx = i;
+        await persist(); viewList(cur);
+      }
+      else if (act === 'save') {
+        syncForm();
+        const miss = missingRequired(); if (miss) { toast(`Kolom "${miss}" wajib diisi`, true); return; }
+        const a = S.arr();
+        if (state.idx === -1) {
+          if (cur === 'jurusan') {
+            const id = (editing.singkatan || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!id) { toast('Singkatan harus berisi huruf atau angka', true); return; }
+            if (a.some(x => x.id === id)) { toast('Kode jurusan sudah dipakai', true); return; }
+            editing.id = id;
+          }
+          if (S.add === 'start') { a.unshift(editing); state.idx = 0; } else { a.push(editing); state.idx = a.length - 1; }
+        } else a[state.idx] = editing;
+        editing = clone(a[state.idx]);
+        if (await persist()) viewList(cur);
+      }
+      else if (act === 'delete') {
+        const item = S.arr()[state.idx];
+        if (!confirm(`Hapus "${dec(S.label(item))}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+        S.arr().splice(state.idx, 1); state.idx = null; editing = null;
+        await persist(); viewList(cur);
+      }
+      else if (act === 'save-profil') {
+        syncForm(); D.settings = Object.assign({}, D.settings, { visi: editing.visi, misi: editing.misi, fotoProfil: editing.fotoProfil, fotoVisi: editing.fotoVisi }); await persist();
+      }
+      else if (act === 'save-ppdb') {
+        syncForm(); D.PPDB = Object.assign({}, editing, { berkas: D.PPDB.berkas }); await persist();
+      }
+      else if (act === 'save-settings') {
+        syncForm(); const miss = missingRequired(); if (miss) { toast(`Kolom "${miss}" wajib diisi`, true); return; }
+        D.settings = clone(editing); await persist();
+      }
+      else if (act === 'recrop') {
+        syncForm(); const key = t.dataset.key, f = CUR_FIELDS.find(x => x.key === key);
+        const r = await openCropper(editing[key], f);
+        if (r && r.data) {
+          try { editing[key] = await storeImage(r.data); refreshBox(key); toast('Potongan diperbarui. Klik Simpan untuk menerapkan.'); }
+          catch (err) { toast(err.message || 'Gagal mengunggah foto', true); }
+        }
+      }
+      else if (act === 'del-img') { syncForm(); editing[t.dataset.key] = ''; refreshBox(t.dataset.key); }
+      else if (act === 'del-gal') { syncForm(); editing[t.dataset.key].splice(i, 1); refreshBox(t.dataset.key); }
+      else if (act === 'recompress') {
+        if (!WEBP) { toast('Browser ini belum mendukung WebP', true); return; }
+        toast('Mengompres foto, mohon tunggu...');
+        try {
+          const st = { n: 0, saved: 0 }; let data = await recompressImages(payload(), st);
+          if (SERVER) data = await migrateImages(data);
+          D = toAdmin(SiteStore.merge(data));
+          if (await persist()) { toast(st.n ? `${st.n} foto dikompres, hemat ${(st.saved / 1048576).toFixed(1)} MB` : 'Tidak ada foto lama yang perlu dikompres'); viewPublish(); }
+        } catch (err) { toast(err && err.message ? err.message : 'Gagal mengompres foto', true); }
+      }
+      else if (act === 'export-zip') {
+        toast('Menyiapkan paket publikasi...');
+        try { const n = await exportPackage(); toast(`Paket diunduh (${n} foto). Ekstrak ke folder proyek lalu upload ulang.`); }
+        catch (err) { toast(err && err.message ? err.message : 'Gagal membuat paket', true); }
+      }
+      else if (act === 'export') {
+        const blob = new Blob([JSON.stringify(payload())], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'data.json'; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+      else if (act === 'discard') {
+        if (!confirm('Buang draf di browser ini dan kembali ke versi yang sudah ditayangkan?')) return;
+        await SiteStore.clearDraft(); location.reload();
+      }
+      else if (act === 'import-draft') {
+        if (!confirm('Pindahkan draf editan di browser ini ke server? Isi di server akan diganti.')) return;
+        await importDraft();
+      }
+      else if (act === 'reset') {
+        if (!confirm('Ganti SEMUA data dengan data contoh awal? Perubahanmu akan hilang.')) return;
+        D = toAdmin(SiteStore.clone(SITE_DEFAULT)); await persist(); nav('home');
+      }
+    });
+    function refreshBox(key) {
+      const f = CUR_FIELDS.find(x => x.key === key), box = $('#box_' + key); if (!f || !box) return;
+      box.outerHTML = f.type === 'gallery' ? galBox(f, editing[key]) : imgBox(f, editing[key]);
+    }
+    document.addEventListener('change', async e => {
+      const t = e.target;
+      if (t.id === 'import-file') {
+        try {
+          let data = SiteStore.merge(JSON.parse(await t.files[0].text()));
+          if (!confirm('Impor akan mengganti seluruh data saat ini. Lanjutkan?')) { t.value = ''; return; }
+          if (SERVER) { toast('Memproses impor, foto dipindah ke server...'); data = await migrateImages(data); }
+          D = toAdmin(data); if (await persist()) { toast('Impor berhasil'); viewPublish(); }
+        } catch (err) { toast(SERVER && err && err.message ? err.message : 'File data.json tidak valid', true); }
+        return;
+      }
+      if (t.type !== 'file' || !t.dataset.key) return;
+      const f = CUR_FIELDS.find(x => x.key === t.dataset.key), files = [...t.files]; if (!f || !files.length) return;
+      syncForm();
+      try {
+        if (f.type === 'image') {
+          const r = await openCropper(files[0], f);
+          if (r && r.data) { editing[f.key] = await storeImage(r.data); refreshBox(f.key); toast('Foto siap. Klik Simpan untuk menerapkan.'); }
+        } else {
+          const out = []; let auto = null, aborted = false;
+          for (let k = 0; k < files.length; k++) {
+            if (auto) { out.push(await storeImage(await autoCrop(files[k], f, auto))); continue; }
+            const r = await openCropper(files[k], f, { n: k + 1, total: files.length });
+            if (r && r.abort) { aborted = true; break; }
+            if (r && r.data) { out.push(await storeImage(r.data)); if (r.auto) auto = r.key; }
+          }
+          if (out.length) { editing[f.key] = (editing[f.key] || []).concat(out); refreshBox(f.key); toast(`${out.length} foto ditambahkan. Klik Simpan untuk menerapkan.`); }
+          else if (aborted) toast('Dibatalkan');
+        }
+      } catch (err) { toast(SERVER && err && err.message ? err.message : 'Gagal memproses gambar', true); }
+      t.value = '';
+    });
+
+    /* ---------- LOGIN + BOOT ---------- */
+    const authed = () => { try { return sessionStorage.getItem('smk_admin') === '1'; } catch (e) { return false; } };
+    // Tampilkan / sembunyikan kata sandi
+    function setPwVisible(show) {
+      const i = $('#pw'), b = $('#pw-eye'); i.type = show ? 'text' : 'password';
+      b.setAttribute('aria-pressed', String(show)); const l = show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'; b.setAttribute('aria-label', l); b.title = l;
+    }
+    $('#pw-eye').onclick = () => { setPwVisible($('#pw').type === 'password'); $('#pw').focus(); };
+    function enter() { setPwVisible(false); $('#login').hidden = true; $('#shell').hidden = false; nav('home'); }
+
+    // Pop-up "Verifikasi Berhasil" yang tampil singkat sebelum masuk ke dashboard
+    const VERIFY_MS = 1300;
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    let loginBusy = false;
+    function showVerified() {
+      hideVerified(true);
+      const el = document.createElement('div'); el.className = 'verify'; el.id = 'verify'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+      el.innerHTML = `<div class="verify-box"><div class="v-check"><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></div>
+        <h3>Verifikasi Berhasil!</h3><p>Memuat panel admin...</p>
+        <div class="v-load"><span class="v-spin" aria-hidden="true"></span>Mohon tunggu sebentar</div><div class="v-bar"><i></i></div></div>`;
+      document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('in'));
+    }
+    function hideVerified(now) {
+      const el = document.getElementById('verify'); if (!el) return;
+      if (now) { el.remove(); return; }
+      el.classList.remove('in'); setTimeout(() => el.remove(), 260);
+    }
+    // Dialog konfirmasi kustom pengganti confirm(): resolve true bila "ya", false bila batal / Esc / klik latar
+    function askConfirm({ title, message, okText = 'Ya', cancelText = 'Batal', icon = '' }) {
+      return new Promise(resolve => {
+        const prev = document.activeElement, id = 'cfm' + Date.now();
+        const el = document.createElement('div'); el.className = 'cfm';
+        el.innerHTML = `<div class="cfm-box" role="alertdialog" aria-modal="true" aria-labelledby="${id}t" aria-describedby="${id}d">
+          <div class="cfm-ico" aria-hidden="true">${icon}</div><h3 id="${id}t">${title}</h3><p id="${id}d">${message}</p>
+          <div class="cfm-act"><button type="button" class="btn ghost" data-r="0">${cancelText}</button><button type="button" class="btn alert" data-r="1">${okText}</button></div></div>`;
+        const btns = el.querySelectorAll('.cfm-act .btn');
+        const done = v => { document.removeEventListener('keydown', onKey, true); el.classList.remove('in'); setTimeout(() => el.remove(), 200); document.body.style.overflow = ''; if (prev && prev.focus) prev.focus(); resolve(v); };
+        const onKey = e => {
+          if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); }
+          else if (e.key === 'Tab') {   // fokus dikunci di dalam dialog
+            const [a, b] = btns, first = e.shiftKey ? a : b, last = e.shiftKey ? b : a;
+            if (document.activeElement === first || !el.contains(document.activeElement)) { e.preventDefault(); last.focus(); }
+          }
+        };
+        el.addEventListener('click', e => { if (e.target === el) done(false); });
+        btns.forEach(b => b.onclick = () => done(b.dataset.r === '1'));
+        document.addEventListener('keydown', onKey, true);
+        document.body.style.overflow = 'hidden'; document.body.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('in')); btns[0].focus();   // fokus awal di "Batal" (pilihan aman)
+      });
+    }
+    const ICON_LOGOUT = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>';
+
+    async function tryLogin() {   // mode statis (tanpa server)
+      if ($('#pw').value !== ADMIN_PASSWORD) { $('#login-err').textContent = 'Kata sandi salah.'; $('#pw').select(); return; }
+      loginBusy = true; $('#btn-login').disabled = true; $('#login-err').textContent = '';
+      try { sessionStorage.setItem('smk_admin', '1'); } catch (e) { }
+      showVerified(); await wait(VERIFY_MS);
+      enter(); hideVerified();
+      loginBusy = false; $('#btn-login').disabled = false;
+    }
+    async function detectServer() {
+      try {
+        const r = await fetch('api/api.php?action=ping', { cache: 'no-store', credentials: 'same-origin' });
+        if (!r.ok) return null;
+        const j = await r.json();
+        return j && j.ok === true ? j : null;
+      } catch (e) { return null; }
+    }
+    function renderLoginInfo() {
+      const box = $('#login-info');
+      if (!SERVER) { box.innerHTML = ''; return; }
+      box.innerHTML = SERVER.problems && SERVER.problems.length
+        ? SERVER.problems.map(p => `<div style="color:var(--red); font-weight:600; margin-bottom:4px">⚠ ${p}</div>`).join('')
+        : '<div style="color:var(--green); font-weight:600">● Terhubung ke server: perubahan yang disimpan langsung tayang.</div>';
+    }
+    async function afterLogin(splashStart) {   // splashStart: waktu pop-up verifikasi mulai tampil (kosong bila bukan dari form login)
+      const r = await SiteStore.load(); SOURCE = r.source; D = toAdmin(r.data);
+      HAS_DRAFT = false;
+      if (SERVER) { try { HAS_DRAFT = !!(await SiteStore.getLocal()); } catch (e) { } }
+      if (splashStart) await wait(Math.max(0, VERIFY_MS - (Date.now() - splashStart)));   // beri jeda agar pesan sempat terbaca
+      enter(); hideVerified();
+      if (SERVER && SOURCE === 'server-empty' && HAS_DRAFT && confirm('Server masih kosong, tapi di browser ini ada draf hasil editanmu sebelumnya. Pindahkan draf itu ke server sekarang?')) await importDraft();
+    }
+    async function importDraft() {
+      try {
+        toast('Memindahkan draf dan foto ke server...');
+        let data = SiteStore.merge(await SiteStore.getLocal());
+        data = await migrateImages(data);
+        D = toAdmin(data);
+        if (await persist()) { await SiteStore.clearDraft(); HAS_DRAFT = false; nav('home'); }
+      } catch (e) { toast(e.message || 'Gagal memindahkan draf', true); }
+    }
+    async function serverLogin() {
+      const btn = $('#btn-login'); loginBusy = true; btn.disabled = true; $('#login-err').textContent = '';
+      try {
+        const j = await api('login', { method: 'POST', json: { password: $('#pw').value } });
+        SERVER.csrf = j.csrf; SERVER.authed = true;
+        showVerified(); await afterLogin(Date.now());
+      } catch (e) { hideVerified(true); $('#login-err').textContent = e.message; $('#pw').select(); }
+      loginBusy = false; btn.disabled = false;
+    }
+    const doLogin = () => { if (!loginBusy) return SERVER ? serverLogin() : tryLogin(); };
+    $('#btn-login').onclick = doLogin;
+    $('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    $('#btn-logout').onclick = async () => {
+      const yes = await askConfirm({ title: 'Keluar dari Panel Admin?', message: 'Sesi Anda akan diakhiri dan Anda perlu memasukkan kata sandi lagi untuk masuk kembali.', okText: 'Ya, Keluar', cancelText: 'Batal', icon: ICON_LOGOUT });
+      if (!yes) return;   // Batal / Esc / klik di luar = tetap di panel
+      if (SERVER) { try { await api('logout', { method: 'POST' }); } catch (e) { } }
+      else { try { sessionStorage.removeItem('smk_admin'); } catch (e) { } }
+      location.reload();
+    };
+    (async function boot() {
+      SERVER = await detectServer();
+      if (SERVER) {
+        if (SERVER.authed) { await afterLogin(); return; }
+        renderLoginInfo(); $('#login').hidden = false; $('#pw').focus(); return;
+      }
+      const r = await SiteStore.load(); SOURCE = r.source; D = toAdmin(r.data);
+      if (authed()) enter(); else { $('#login').hidden = false; $('#pw').focus(); }
+    })();
+  </script>
+</body>
+
+</html>
